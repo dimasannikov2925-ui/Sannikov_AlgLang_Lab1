@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Sannikov_Laba1/Sannikov_Laba1.vcxproj" />
+</Solution>
