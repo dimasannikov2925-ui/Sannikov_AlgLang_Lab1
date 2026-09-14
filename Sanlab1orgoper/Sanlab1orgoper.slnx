@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="Sannikov_Laba1/Sannikov_Laba1.vcxproj" Id="4e3090ea-4871-4ac8-bfed-529922d471ce" />
+  <Project Path="Sanlab1orgoper/Sanlab1orgoper.vcxproj" />
 </Solution>
