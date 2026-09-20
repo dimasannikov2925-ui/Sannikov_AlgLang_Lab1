@@ -1,20 +1,4 @@
-﻿//Создать консольное приложение, описывающее базовые сущности трубопроводного транспорта газа или нефти: 
-//труба и КС или НПС(в сильно упрощенном варианте). +
-//Свойства трубы : километровая отметка(название), длина(в км), диаметр(в мм), признак "в ремонте".+
-//Свойства КС : название, количество цехов, количество цехов в работе, класс станции(некий показатель,+
-//обобщающий различные специфические характеристики)+ 
-// 
-//При запуске программы выводится меню, запрашивающее в бесконечном цикле действие от пользователя.+
-//Пример меню : 1. Добавить трубу 2. Добавить КС 3. Просмотр всех объектов 4. Редактировать трубу+
-//5. Редактировать КС 6. Сохранить 7. Загрузить 0. Выход+
-
-//Поддержка русского языка не обязательна.+
-//В программе идет работа с одной трубой и одной КС.+
-//Обязательно : проверка корректности совершаемых действий.Программа должна быть устойчива к любым действиям пользователя.
-//Повод для снижения балла : неосмысленное наименование переменных и функций, необоснованное использование глобальных переменных,
-//неструктурированный код.
-//Код выполнения работы фиксируется коммитами в github(с осмысленными комментариями).К ответу прикрепляется ссылка на финальный коммит!
-#include <iostream> 
+﻿#include <iostream> 
 #include <string> 
 
 struct KC
@@ -39,7 +23,11 @@ struct Pipe
 // ЯЯ   Предусмотреть ввод неверного типа данных при числах                     !!
 // допустим класс станций - А В С + 0 1 2, (А1, А2, А3) исправить               !!
 // 10abc - исправить ошибку                                                     !!
-
+// ошибка инпута
+//Обязательно : проверка корректности совершаемых действий.Программа должна быть устойчива к любым действиям пользователя.
+//Повод для снижения балла : неосмысленное наименование переменных и функций, необоснованное использование глобальных переменных,
+//неструктурированный код.
+//Код выполнения работы фиксируется коммитами в github(с осмысленными комментариями).К ответу прикрепляется ссылка на финальный коммит!
 void readconsolkc(KC& kc)
 {
     std::cout << "\nRead name KC: ";
@@ -90,13 +78,20 @@ void readconsolpipe(Pipe& pipe)
         std::cout << "\nV Remonte? 'Yes' / 'No': ";
         std::cin >> vodremont;
     } while ((vodremont != "Yes") && (vodremont != "No") && (vodremont != "yes") && (vodremont != "no")); 
+    if ((vodremont == "Yes") || (vodremont == "yes"))
+    {
+        pipe.remontpipe = 1;
+    }
+    else
+    {
+        pipe.remontpipe = 0;
+    }
 }
 void coutconsol3(Pipe& pipe, KC& KC)
 {
-    std::cout << "Pipe:\n" << "Name:" << pipe.namepipe << "\n";
+    std::cout << "\n---Pipe---\n" << "Name:" << pipe.namepipe << "\n";
     std::cout << "Dlina(km): " << pipe.dlinapipe << "\n";
     std::cout << "Diametr(mm): " << pipe.mmpipe << "\n";
-    //std::cout << "B PeMoHTe: " << pipe.remontpipe << "\n";
     if (pipe.remontpipe == 0)
     {
         std::cout << "B PeMoHTe:  HeT!\n";
@@ -105,7 +100,7 @@ void coutconsol3(Pipe& pipe, KC& KC)
     {
         std::cout << "B PeMoHTe: Da!\n";
     }
-    std::cout << "KC\n" << "Name: " << KC.nameKC << "\n";
+    std::cout << "\n---KC---\n" << "Name: " << KC.nameKC << "\n";
     std::cout << "Kol-vo zehov:" << KC.kolvozehKC << "\n";
     std::cout << "Kol-vo zehov B PaboTe :" << KC.zehrabotKC << "\n";
     std::cout << "Class CTaHzuu:" << KC.clasKC << "\n";
@@ -118,6 +113,14 @@ void redactpipe(Pipe& pipe)
         std::cout << "\nV Remonte? 'Yes' / 'No': ";
         std::cin >> vodremont;
     } while ((vodremont != "Yes") && (vodremont != "No") && (vodremont != "yes") && (vodremont != "no"));
+    if ((vodremont == "Yes") || (vodremont == "yes"))
+    {
+        pipe.remontpipe = 1;
+    }
+    else
+    {
+        pipe.remontpipe = 0;
+    }
 }
 void redactkc(KC& kc)
 {
@@ -129,11 +132,9 @@ void redactkc(KC& kc)
         std::cin.ignore(10000, '\n');
     }
 }
-int main()
+void menu()
 {
-    Pipe pipe{};
-    KC KC{};
-    std::cout << "1.Add Pipe\n";
+    std::cout << "\n1.Add Pipe\n";
     std::cout << "2.Add KC\n";
     std::cout << "3.Chek objects\n";
     std::cout << "4.Redact Pipe\n";
@@ -141,8 +142,54 @@ int main()
     std::cout << "6.Save\n";
     std::cout << "7.Download\n";
     std::cout << "0.Exit\n";
-    readconsolpipe(pipe);
-    readconsolkc(KC);
-    coutconsol3(pipe, KC);
+}
+int main()
+{
+    Pipe pipe{};
+    KC KC{};
+    int vvod;
+    while (true)
+    {
+        menu();
+        std::cout << "\nInput: ";
+        std::cin >> vvod;
+        switch (vvod)
+        {
+        case 1:
+        {
+            readconsolpipe(pipe);
+            break;
+        }
+        case 2:
+        {
+            readconsolkc(KC);
+            break;
+        }
+        case 3:
+        {
+            coutconsol3(pipe, KC);
+            break;
+        }
+        case 4:
+        {
+            redactpipe(pipe);
+            break;
+        }
+        case 5:
+        {
+            redactkc(KC);
+            break;
+        }
+        case 0:
+        {
+            return 0;
+        }
+        default:
+        {
+            std::cout << "No command, input OT 0 do 7.\n";
+            break;
+        }
+        }
 
+    }
 }
