@@ -1,6 +1,6 @@
 ﻿#include <iostream> 
 #include <string> 
-
+#include <fstream>
 struct KC
 {
     std::string nameKC;
@@ -15,9 +15,6 @@ struct Pipe
     int mmpipe;
     bool remontpipe;
 };
-
-//Для каждой структуры реализовать функции : 
-//сохранение данных в файл, загрузка данных из файла.
 
 void redactpipe(Pipe& pipe)
 {
@@ -118,8 +115,60 @@ void menu()
     std::cout << "4.Redact Pipe\n";
     std::cout << "5.Redact KC\n";
     std::cout << "6.Save\n";
-    std::cout << "7.Download\n";
+    std::cout << "7.Open\n";
     std::cout << "0.Exit\n";
+}
+void savefile(Pipe& pipe, KC& kc)
+{
+    std::ofstream fout("file.txt");
+    if (!fout)
+    {
+        std::cout << "File error!\n";
+        return;
+    }
+    fout << pipe.namepipe << "\n";
+    fout << pipe.dlinapipe << "\n";
+    fout << pipe.mmpipe << "\n";
+    if (pipe.remontpipe == 0)
+    {
+        fout << "No!" << "\n";
+    }
+    else
+    {
+        fout << "Yes!" << "\n";
+    }
+    fout << kc.nameKC << "\n";
+    fout << kc.kolvozehKC << "\n";
+    fout << kc.zehrabotKC << "\n";
+    fout << kc.clasKC << "\n";
+}
+void openfile(Pipe& pipe, KC& kc)
+{
+    std::ifstream fin("file.txt");
+    std::string remont;
+    if (fin)
+    {
+        fin >> pipe.namepipe;
+        fin >> pipe.dlinapipe;
+        fin >> pipe.mmpipe;
+        fin >> remont;
+        if (remont == "Yes!")
+        {
+            pipe.remontpipe = 1;
+        }
+        else
+        {
+            pipe.remontpipe = 0;
+        }
+        fin >> kc.nameKC;
+        fin >> kc.kolvozehKC;
+        fin >> kc.zehrabotKC;
+        fin >> kc.clasKC;
+    }
+    else
+    {
+        std::cout << "File broyken\n";
+    }
 }
 int main()
 {
@@ -170,8 +219,19 @@ int main()
             redactkc(KC);
             break;
         }
+        case '6':
+        {
+            savefile(pipe, KC);
+            break;
+        }
+        case '7':
+        {
+            openfile(pipe, KC);
+            break;
+        }
         case '0':
         {
+            std::cout << "\n\nBye Bye!\n\n";
             return 0;
         }
         default:
