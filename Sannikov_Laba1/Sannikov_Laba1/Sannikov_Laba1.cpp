@@ -18,25 +18,18 @@ struct Pipe
 
 void redactpipe(Pipe& pipe)
 {
-    std::string vodremont;
-    do
+    std::cout << "\nV Remonte? Yes-1 / No-0: ";
+    while (!(std::cin >> pipe.remontpipe) || (std::cin.peek() != '\n') )
     {
-        std::cout << "\nV Remonte? 'Yes' / 'No': ";
-        std::cin >> vodremont;
-    } while ((vodremont != "Yes") && (vodremont != "No") && (vodremont != "yes") && (vodremont != "no"));
-    if ((vodremont == "Yes") || (vodremont == "yes"))
-    {
-        pipe.remontpipe = 1;
-    }
-    else
-    {
-        pipe.remontpipe = 0;
+        std::cout << "\nV Remonte? Yes-1 / No-0: ";
+        std::cin.clear();
+        std::cin.ignore(10000, '\n');
     }
 }
 void redactkc(KC& kc)
 {
     std::cout << "\nRead kol-vo rabot ZEH in KC: ";
-    while (!(std::cin >> kc.zehrabotKC) || (kc.zehrabotKC < 0) || (kc.zehrabotKC > kc.kolvozehKC) || (std::cin.peek() != '\n'))
+    while (!(std::cin >> kc.zehrabotKC) || (std::cin.peek() != '\n') || (kc.zehrabotKC < 0) || (kc.zehrabotKC > kc.kolvozehKC))
     {
         std::cout << "No! Read Kol-vo ZEH v Pabote: ";
         std::cin.clear();
@@ -46,7 +39,8 @@ void redactkc(KC& kc)
 void readconsolkc(KC& kc)
 {
     std::cout << "\nRead name KC: ";
-    std::cin >> kc.nameKC;
+    std::cin.ignore(10000, '\n');
+    std::getline(std::cin, kc.nameKC );
     
     std::cout << "\nRead Kol-vo ZEH in KC: ";
     while (!(std::cin >> kc.kolvozehKC) || (kc.kolvozehKC <= 0) || (std::cin.peek() != '\n'))
@@ -68,7 +62,8 @@ void readconsolkc(KC& kc)
 void readconsolpipe(Pipe& pipe)
 {
     std::cout << "\nRead Name Pipe: ";
-    std::cin >> pipe.namepipe;
+    std::cin.ignore(10000, '\n');
+    std::getline(std::cin, pipe.namepipe);
     
     std::cout << "\nRead dlina(km) pipe: ";
     while (!(std::cin >> pipe.dlinapipe) || (pipe.dlinapipe <= 0) || (std::cin.peek() != '\n'))
@@ -86,21 +81,14 @@ void readconsolpipe(Pipe& pipe)
     }
     redactpipe(pipe);
 }
-void coutconsol3(Pipe& pipe)
+void showpipe(Pipe& pipe)
 {
     std::cout << "\n---Pipe---\n" << "Name:" << pipe.namepipe << "\n";
     std::cout << "Dlina(km): " << pipe.dlinapipe << "\n";
     std::cout << "Diametr(mm): " << pipe.mmpipe << "\n";
-    if (pipe.remontpipe == 0)
-    {
-        std::cout << "B PeMoHTe:  HeT!\n";
-    }
-    else
-    {
-        std::cout << "B PeMoHTe: Da!\n";
-    }
+    std::cout << "V remonte (1-Yes, 0-No): " << pipe.remontpipe << "\n";
 }
-void coutconsol3kc(KC& kc)
+void showkc(KC& kc)
 {
     std::cout << "\n---KC---\n" << "Name: " << kc.nameKC << "\n";
     std::cout << "Kol-vo zehov:" << kc.kolvozehKC << "\n";
@@ -118,57 +106,40 @@ void menu()
     std::cout << "7.Open\n";
     std::cout << "0.Exit\n";
 }
-void savefile(Pipe& pipe, KC& kc)
+void savefilepipe(std::ofstream& fout, Pipe& pipe)
 {
-    std::ofstream fout("file.txt");
-    if (!fout)
-    {
-        std::cout << "File error!\n";
-        return;
-    }
     fout << pipe.namepipe << "\n";
     fout << pipe.dlinapipe << "\n";
     fout << pipe.mmpipe << "\n";
-    if (pipe.remontpipe == 0)
-    {
-        fout << "No!" << "\n";
-    }
-    else
-    {
-        fout << "Yes!" << "\n";
-    }
+    fout << pipe.remontpipe << "\n";
+}
+
+void savefileKC(std::ofstream& fout, KC& kc)
+{
     fout << kc.nameKC << "\n";
     fout << kc.kolvozehKC << "\n";
     fout << kc.zehrabotKC << "\n";
     fout << kc.clasKC << "\n";
 }
-void openfile(Pipe& pipe, KC& kc)
+
+void openfilepipe(std::ifstream& fin, Pipe& pipe)
 {
-    std::ifstream fin("file.txt");
-    std::string remont;
-    if (fin)
-    {
-        fin >> pipe.namepipe;
-        fin >> pipe.dlinapipe;
-        fin >> pipe.mmpipe;
-        fin >> remont;
-        if (remont == "Yes!")
-        {
-            pipe.remontpipe = 1;
-        }
-        else
-        {
-            pipe.remontpipe = 0;
-        }
-        fin >> kc.nameKC;
-        fin >> kc.kolvozehKC;
-        fin >> kc.zehrabotKC;
-        fin >> kc.clasKC;
-    }
-    else
-    {
-        std::cout << "File broyken\n";
-    }
+    std::getline(fin, pipe.namepipe);
+
+    fin >> pipe.dlinapipe;
+    fin >> pipe.mmpipe;
+    fin >> pipe.remontpipe;
+
+    fin.ignore(10000, '\n');
+}
+
+void openfileKC(std::ifstream& fin, KC& kc)
+{
+    std::getline(fin, kc.nameKC);
+
+    fin >> kc.kolvozehKC;
+    fin >> kc.zehrabotKC;
+    fin >> kc.clasKC;
 }
 int main()
 {
@@ -205,8 +176,8 @@ int main()
         }
         case '3':
         {
-            coutconsol3(pipe);
-            coutconsol3kc(KC);
+            showpipe(pipe);
+            showkc(KC);
             break;
         }
         case '4':
@@ -221,12 +192,30 @@ int main()
         }
         case '6':
         {
-            savefile(pipe, KC);
+            std::ofstream fout("file.txt");
+
+            if (!fout)
+            {
+                std::cout << "File error!\n";
+                break;
+            }
+
+            savefilepipe(fout, pipe);
+            savefileKC(fout, KC);
             break;
         }
         case '7':
         {
-            openfile(pipe, KC);
+            std::ifstream fin("file.txt");
+
+            if (!fin)
+            {
+                std::cout << "File broyek\n";
+                break;
+            }
+
+            openfilepipe(fin, pipe);
+            openfileKC(fin, KC);
             break;
         }
         case '0':
