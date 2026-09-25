@@ -7,6 +7,7 @@ struct KC
     int kolvozehKC;
     int zehrabotKC; 
     int clasKC;
+    bool kcexists = false;
 };
 struct Pipe
 {
@@ -14,6 +15,7 @@ struct Pipe
     double dlinapipe;
     int mmpipe;
     bool remontpipe;
+    bool pipeexists = false;
 };
 
 void redactpipe(Pipe& pipe)
@@ -108,86 +110,136 @@ void menu()
 }
 void savefilepipe(std::ofstream& fout, Pipe& pipe)
 {
-    fout << pipe.namepipe << "\n";
-    fout << pipe.dlinapipe << "\n";
-    fout << pipe.mmpipe << "\n";
-    fout << pipe.remontpipe << "\n";
+    fout << pipe.pipeexists << "\n";
+    if (pipe.pipeexists)
+    {
+        fout << pipe.namepipe << "\n";
+        fout << pipe.dlinapipe << "\n";
+        fout << pipe.mmpipe << "\n";
+        fout << pipe.remontpipe << "\n";
+    }
 }
 
 void savefileKC(std::ofstream& fout, KC& kc)
 {
-    fout << kc.nameKC << "\n";
-    fout << kc.kolvozehKC << "\n";
-    fout << kc.zehrabotKC << "\n";
-    fout << kc.clasKC << "\n";
+    fout << kc.kcexists << "\n";
+    if (kc.kcexists)
+    {
+        fout << kc.nameKC << "\n";
+        fout << kc.kolvozehKC << "\n";
+        fout << kc.zehrabotKC << "\n";
+        fout << kc.clasKC << "\n";
+    }
 }
 
 void openfilepipe(std::ifstream& fin, Pipe& pipe)
 {
-    std::getline(fin, pipe.namepipe);
-
-    fin >> pipe.dlinapipe;
-    fin >> pipe.mmpipe;
-    fin >> pipe.remontpipe;
-
+    fin >> pipe.pipeexists;
     fin.ignore(10000, '\n');
+
+    if (pipe.pipeexists)
+    {
+        std::getline(fin, pipe.namepipe);
+        fin >> pipe.dlinapipe;
+        fin >> pipe.mmpipe;
+        fin >> pipe.remontpipe;
+        fin.ignore(10000, '\n');
+    }
 }
 
 void openfileKC(std::ifstream& fin, KC& kc)
 {
-    std::getline(fin, kc.nameKC);
+    fin >> kc.kcexists;
+    fin.ignore(10000, '\n');
 
-    fin >> kc.kolvozehKC;
-    fin >> kc.zehrabotKC;
-    fin >> kc.clasKC;
+    if (kc.kcexists)
+    {
+        std::getline(fin, kc.nameKC);
+        fin >> kc.kolvozehKC;
+        fin >> kc.zehrabotKC;
+        fin >> kc.clasKC;
+        fin.ignore(10000, '\n');
+    }
 }
 int main()
 {
     Pipe pipe{};
-    KC KC{};
+    KC kc{};
     char vvod;
     while (true)
     {
         menu();
-        do
+        while (true)
         {
             std::cout << "\nInput: ";
             std::cin >> vvod;
-            if ((vvod < '0') || (vvod > '7') || (std::cin.peek() != '\n'))
+
+            if ((vvod >= '0') && (vvod <= '7') && (std::cin.peek() == '\n'))
             {
-                std::cout << "Input int 0-7: ";
-                std::cin.ignore(10000, '\n');
+                break;
             }
 
+            std::cout << "Input int 0-7: ";
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
         }
-        while ((vvod < '0') || (vvod > '7') || (std::cin.peek() != '\n'));
     
         switch (vvod)
         {
         case '1':
         {
             readconsolpipe(pipe);
+            pipe.pipeexists = true;
             break;
         }
         case '2':
         {
-            readconsolkc(KC);
+            readconsolkc(kc);
+            kc.kcexists = true;
             break;
         }
         case '3':
         {
-            showpipe(pipe);
-            showkc(KC);
+            if (pipe.pipeexists)
+            {
+                showpipe(pipe);
+            }
+            else
+            {
+                std::cout << "Pipe have not!\n";
+            }
+            if (kc.kcexists)
+            {
+                showkc(kc);
+            }
+            else
+            {
+                std::cout << "KC have not!\n";
+            }
             break;
         }
         case '4':
         {
-            redactpipe(pipe);
+            if (pipe.pipeexists)
+            {
+                redactpipe(pipe);
+            }
+            else
+            {
+                std::cout << "Pipe have not!\n";
+            }
             break;
         }
         case '5':
         {
-            redactkc(KC);
+            if (kc.kcexists)
+            {
+                redactkc(kc);
+            }
+            else
+            {
+                std::cout << "KC have not!\n";
+            }
             break;
         }
         case '6':
@@ -201,7 +253,7 @@ int main()
             }
 
             savefilepipe(fout, pipe);
-            savefileKC(fout, KC);
+            savefileKC(fout, kc);
             break;
         }
         case '7':
@@ -215,7 +267,7 @@ int main()
             }
 
             openfilepipe(fin, pipe);
-            openfileKC(fin, KC);
+            openfileKC(fin, kc);
             break;
         }
         case '0':
