@@ -7,7 +7,6 @@ struct KC
     int kolvozehKC;
     int zehrabotKC; 
     int clasKC;
-    bool kcexists = false;
 };
 struct Pipe
 {
@@ -15,7 +14,6 @@ struct Pipe
     double dlinapipe;
     int mmpipe;
     bool remontpipe;
-    bool pipeexists = false;
 };
 
 void redactpipe(Pipe& pipe)
@@ -38,6 +36,8 @@ void redactkc(KC& kc)
         std::cin.ignore(10000, '\n');
     }
 }
+
+
 void readconsolkc(KC& kc)
 {
     std::cout << "\nRead name KC: ";
@@ -110,57 +110,44 @@ void menu()
 }
 void savefilepipe(std::ofstream& fout, Pipe& pipe)
 {
-    fout << pipe.pipeexists << "\n";
-    if (pipe.pipeexists)
-    {
-        fout << pipe.namepipe << "\n";
-        fout << pipe.dlinapipe << "\n";
-        fout << pipe.mmpipe << "\n";
-        fout << pipe.remontpipe << "\n";
-    }
+    
+    fout << pipe.namepipe << "\n";
+    fout << pipe.dlinapipe << "\n";
+    fout << pipe.mmpipe << "\n";
+    fout << pipe.remontpipe << "\n";
+   
 }
 
 void savefileKC(std::ofstream& fout, KC& kc)
 {
-    fout << kc.kcexists << "\n";
-    if (kc.kcexists)
-    {
-        fout << kc.nameKC << "\n";
-        fout << kc.kolvozehKC << "\n";
-        fout << kc.zehrabotKC << "\n";
-        fout << kc.clasKC << "\n";
-    }
+    fout << kc.nameKC << "\n";
+    fout << kc.kolvozehKC << "\n";
+    fout << kc.zehrabotKC << "\n";
+    fout << kc.clasKC << "\n";
+    
 }
 
 void openfilepipe(std::ifstream& fin, Pipe& pipe)
 {
-    fin >> pipe.pipeexists;
-    fin.ignore(10000, '\n');
 
-    if (pipe.pipeexists)
-    {
-        std::getline(fin, pipe.namepipe);
-        fin >> pipe.dlinapipe;
-        fin >> pipe.mmpipe;
-        fin >> pipe.remontpipe;
-        fin.ignore(10000, '\n');
-    }
+    std::getline(fin, pipe.namepipe);
+    fin >> pipe.dlinapipe;
+    fin >> pipe.mmpipe;
+    fin >> pipe.remontpipe;
+    fin.ignore(10000, '\n');
+   
 }
 
 void openfileKC(std::ifstream& fin, KC& kc)
 {
-    fin >> kc.kcexists;
-    fin.ignore(10000, '\n');
-
-    if (kc.kcexists)
-    {
-        std::getline(fin, kc.nameKC);
-        fin >> kc.kolvozehKC;
-        fin >> kc.zehrabotKC;
-        fin >> kc.clasKC;
-        fin.ignore(10000, '\n');
-    }
+    
+    std::getline(fin, kc.nameKC);
+    fin >> kc.kolvozehKC;
+    fin >> kc.zehrabotKC;
+    fin >> kc.clasKC;
+    
 }
+
 int main()
 {
     Pipe pipe{};
@@ -189,18 +176,16 @@ int main()
         case '1':
         {
             readconsolpipe(pipe);
-            pipe.pipeexists = true;
             break;
         }
         case '2':
         {
             readconsolkc(kc);
-            kc.kcexists = true;
             break;
         }
         case '3':
         {
-            if (pipe.pipeexists)
+            if (pipe.dlinapipe > 0)
             {
                 showpipe(pipe);
             }
@@ -208,7 +193,7 @@ int main()
             {
                 std::cout << "Pipe have not!\n";
             }
-            if (kc.kcexists)
+            if (kc.kolvozehKC > 0)
             {
                 showkc(kc);
             }
@@ -220,7 +205,7 @@ int main()
         }
         case '4':
         {
-            if (pipe.pipeexists)
+            if (pipe.dlinapipe > 0)
             {
                 redactpipe(pipe);
             }
@@ -232,7 +217,7 @@ int main()
         }
         case '5':
         {
-            if (kc.kcexists)
+            if (kc.kolvozehKC > 0)
             {
                 redactkc(kc);
             }
